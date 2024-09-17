@@ -1,0 +1,33 @@
+version: '3.5'
+services:
+    php:
+        build: docker/php
+        volumes:
+            - ./:/var/www/html:cached
+            - ./logs:/var/www/var/logs:cached
+        ports:
+            - 80:80
+        depends_on:
+            - db
+        extra_hosts:
+            - "dockerhost:127.0.0.1"
+
+    db:
+        image: mysql
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - my-datavolume:/var/lib/mysql
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8070:8080
+
+volumes:
+    my-datavolume:
